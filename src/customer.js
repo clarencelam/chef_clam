@@ -10,13 +10,14 @@ export default class Customer {
     this.return_speed = 5;
     this.turned_around = false;
     this.hunger_points = 1;
+    this.marked_for_deletion = false;
+    this.GAMEWIDTH = this.gameWidth;
 
     this.min = 0;
     this.max = gameHeight * 0.75;
     const rndInt = randomIntFromInterval(this.min, this.max);
-    console.log(rndInt);
 
-    this.x_pos = gameWidth - this.size;
+    this.x_pos = this.gameWidth - this.size;
     this.x_direction = -1; //heading left to start
     this.y_pos = rndInt;
 
@@ -43,12 +44,12 @@ export default class Customer {
       }
     }
 
+    // if the customer turns around, draw image flipped. Else, draw regularly
     if (this.turned_around === true) {
       ctx.translate(this.x_pos + this.size, this.y_pos);
       // scaleX by -1; this "trick" flips horizontally
       ctx.scale(-1, 1);
-      // draw the img
-      // no need for x,y since we've already translated
+      // draw the img, no need for x,y since we've already translated
       ctx.drawImage(this.img, 0, 0);
       // always clean up -- reset transformations to default
       ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -70,6 +71,10 @@ export default class Customer {
         this.walking = true;
       }
       this.x_direction = 1;
+    }
+    // if customer is past the game-width, they have exited without being fed. Mark for deletion
+    if (this.x_pos > this.GAMEWIDTH) {
+      this.marked_for_deletion = true;
     }
     this.x_pos = this.x_pos + this.speed * this.x_direction;
   }
