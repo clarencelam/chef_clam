@@ -1,13 +1,18 @@
 export default class Food {
+  // Class to represent the food objects used as bullets in the game
   constructor(x, y) {
     this.image = document.getElementById("nigiri_img");
     this.x_pos = x;
     this.y_pos = y;
     this.size = 50;
-    this.speed = 10;
+    this.init_speed = 10;
+    this.speed_depricator = 0.2;
+    this.fade_time = 180;
+    this.marked_for_deletion = false;
   }
 
   draw(ctx) {
+    // Draw the food with a spin effect
     var time = new Date();
     ctx.save();
     ctx.translate(this.x_pos + this.size / 2, this.y_pos + this.size / 2);
@@ -26,6 +31,20 @@ export default class Food {
   }
 
   update(deltaTime) {
-    this.x_pos += this.speed;
+    //depracate speed to 0 to stop the food
+    if (this.init_speed > 0) {
+      this.init_speed = this.init_speed - this.speed_depricator;
+    } else {
+      this.init_speed = 0;
+    }
+
+    //deprecate fade_time to 0 to signal when to remove the food from scrn
+    if (this.fade_time > 0) {
+      this.fade_time = this.fade_time - 1;
+    } else {
+      this.fade_time = 0;
+      this.marked_for_deletion = true;
+    }
+    this.x_pos += this.init_speed;
   }
 }

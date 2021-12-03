@@ -1,7 +1,8 @@
 export default class Clam {
   constructor(gameWidth, gameHeight) {
     this.img = document.getElementById("clam_default");
-
+    this.GAMEWIDTH = gameWidth;
+    this.GAMEHEIGHT = gameHeight;
     this.x_pos = gameWidth / 2;
     this.y_pos = gameHeight / 3;
     this.size = 75;
@@ -27,16 +28,16 @@ export default class Clam {
   update(deltaTime) {
     if (!deltaTime) return;
 
-    if (this.moving_left === true) {
+    if (this.moving_left === true && this.x_pos > 0) {
       this.x_pos = this.x_pos - this.x_speed;
     }
-    if (this.moving_right === true) {
+    if (this.moving_right === true && this.x_pos < this.GAMEWIDTH - this.size) {
       this.x_pos = this.x_pos + this.x_speed;
     }
-    if (this.moving_up === true) {
+    if (this.moving_up === true && this.y_pos > 0) {
       this.y_pos = this.y_pos - this.y_speed;
     }
-    if (this.moving_down === true) {
+    if (this.moving_down === true && this.y_pos < this.GAMEHEIGHT - this.size) {
       this.y_pos = this.y_pos + this.y_speed;
     }
     //if (this.angle_up === true) {
@@ -47,6 +48,7 @@ export default class Clam {
     // Draw the clam to the screen. If it is shooting, draw its shooting animation
     if (this.shooting === true) {
       ctx.save();
+      // Tilts the clam 30 degrees when shooting
       var rad = (30 * Math.PI) / 180;
       ctx.translate(this.x_pos + this.size / 2, this.y_pos + this.size / 2);
       ctx.rotate(rad);
