@@ -18,13 +18,13 @@ let clam = new Clam(GAME_WIDTH, GAME_HEIGHT);
 let bullets = [];
 let customers = [];
 let cust = new Customer(GAME_HEIGHT, GAME_WIDTH);
+customers.push(cust);
 
 let lastTime = 0;
 new InputHandler(clam);
 
 export function fireBullet() {
   bullets.push(new Food(clam.x_pos, clam.y_pos));
-  console.log(bullets.length);
 }
 
 function gameLoop(timestamp) {
@@ -34,8 +34,9 @@ function gameLoop(timestamp) {
   ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
   ctx.drawImage(background, 0, 0, 1200, 800);
 
-  cust.draw(ctx);
+  customers = customers.filter((customer) => !customer.marked_for_deletion);
   cust.update(deltaTime);
+  cust.draw(ctx);
 
   bullets = bullets.filter((bullet) => !bullet.marked_for_deletion);
   bullets.forEach((bullet, index) => {
