@@ -50,7 +50,8 @@ function gameLoop(timestamp) {
   // update and draw bullets
   bullets = bullets.filter((bullet) => !bullet.marked_for_deletion);
   bullets.forEach((bullet, index) => {
-    // customers.foreach(customer)
+    // customers.foreach(customer), if collide, run bullet.collide and cust.collide functions
+    // will pause objects
     bullet.update(deltaTime);
     bullet.draw(ctx);
   });
