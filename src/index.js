@@ -16,15 +16,17 @@ export function randomIntFromInterval(min, max) {
 let background = document.getElementById("background");
 let clam = new Clam(GAME_WIDTH, GAME_HEIGHT);
 let bullets = [];
+
+// create customer list and add one
 let customers = [];
 let cust = new Customer(GAME_HEIGHT, GAME_WIDTH);
+customers.push(cust);
 
 let lastTime = 0;
 new InputHandler(clam);
 
 export function fireBullet() {
   bullets.push(new Food(clam.x_pos, clam.y_pos));
-  console.log(bullets.length);
 }
 
 function gameLoop(timestamp) {
@@ -34,11 +36,21 @@ function gameLoop(timestamp) {
   ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
   ctx.drawImage(background, 0, 0, 1200, 800);
 
-  cust.draw(ctx);
-  cust.update(deltaTime);
+  // update and draw customer objects
+  customers = customers.filter((customer) => !customer.markfordelete);
+  customers.forEach((customer, index) => {
+    customer.update(deltaTime);
+    customer.draw(ctx);
+  });
+  // reload customers array (temporary code, will flesh out cust gen)
+  if (customers.length < 1) {
+    customers.push(new Customer(GAME_HEIGHT, GAME_WIDTH));
+  }
 
+  // update and draw bullets
   bullets = bullets.filter((bullet) => !bullet.marked_for_deletion);
   bullets.forEach((bullet, index) => {
+    // customers.foreach(customer)
     bullet.update(deltaTime);
     bullet.draw(ctx);
   });
