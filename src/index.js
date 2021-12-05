@@ -2,6 +2,7 @@ import Clam from "/src/clam";
 import InputHandler from "/src/input";
 import Food from "/src/food";
 import Customer from "/src/customer";
+import { detectCollision } from "/src/collisionDetection";
 
 let canvas = document.getElementById("gameScreen");
 let ctx = canvas.getContext("2d");
@@ -49,9 +50,18 @@ function gameLoop(timestamp) {
 
   // update and draw bullets
   bullets = bullets.filter((bullet) => !bullet.marked_for_deletion);
+
+  // Code block to apply actions to each bullet active
   bullets.forEach((bullet, index) => {
-    // customers.foreach(customer), if collide, run bullet.collide and cust.collide functions
+    // if the bullet collides with any customer, run bullet.collide and cust.collide functions
     // will pause objects
+    customers.forEach((customer, index) => {
+      if (detectCollision(bullet, customer)) {
+        bullet.hitCustomer();
+        customer.hitFood();
+        console.log(bullet.marked_for_deletion);
+      }
+    });
     bullet.update(deltaTime);
     bullet.draw(ctx);
   });

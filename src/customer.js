@@ -28,6 +28,14 @@ export default class Customer {
     this.wait_time = 150;
   }
 
+  hitFood() {
+    this.stop();
+  }
+
+  stop() {
+    this.speed = 0;
+  }
+
   apply_return_speed() {
     this.speed = this.return_speed;
   }

@@ -8,7 +8,19 @@ export default class Food {
     this.init_speed = 10;
     this.speed_depricator = 0.2;
     this.fade_time = 180;
+    this.fade_depricator = 1;
     this.marked_for_deletion = false;
+  }
+
+  hitCustomer() {
+    // actions when food hits customer
+    this.stop();
+    this.fade_depricator = 0;
+  }
+
+  stop() {
+    // make the food stop moving
+    this.speed_depricator = this.init_speed;
   }
 
   draw(ctx) {
@@ -40,7 +52,7 @@ export default class Food {
 
     //deprecate fade_time to 0 to signal when to remove the food from scrn
     if (this.fade_time > 0) {
-      this.fade_time = this.fade_time - 1;
+      this.fade_time = this.fade_time - this.fade_depricator;
     } else {
       this.fade_time = 0;
       this.marked_for_deletion = true;

@@ -20,7 +20,6 @@ export default class InputHandler {
           // Shoot a bullet
           fireBullet();
           clam.shooting = true;
-          console.log(clam.shooting);
           break;
         default:
           console.log("Error - keydown not recognized");
