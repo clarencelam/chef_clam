@@ -10,11 +10,12 @@ export default class Customer {
     this.return_speed = 5;
     this.turned_around = false;
     this.hunger_points = 1;
+    this.markfordelete = false;
+    this.GAMEWIDTH = gameWidth;
 
     this.min = 0;
     this.max = gameHeight * 0.75;
     const rndInt = randomIntFromInterval(this.min, this.max);
-    console.log(rndInt);
 
     this.x_pos = gameWidth - this.size;
     this.x_direction = -1; //heading left to start
@@ -25,6 +26,14 @@ export default class Customer {
     this.x_walk_threshold = this.size * 2;
     // time waited after customer gets to walk threshold
     this.wait_time = 150;
+  }
+
+  hitFood() {
+    this.stop();
+  }
+
+  stop() {
+    this.speed = 0;
   }
 
   apply_return_speed() {
@@ -49,7 +58,7 @@ export default class Customer {
       ctx.scale(-1, 1);
       // draw the img
       // no need for x,y since we've already translated
-      ctx.drawImage(this.img, 0, 0);
+      ctx.drawImage(this.img, 0, 0, this.size, this.size);
       // always clean up -- reset transformations to default
       ctx.setTransform(1, 0, 0, 1, 0, 0);
     } else {
@@ -64,13 +73,19 @@ export default class Customer {
         this.speed = 0;
         this.walking = false;
         this.wait_time = this.wait_time - 1;
-      } else {
+      }
+      if (this.wait_time <= 0) {
         this.apply_return_speed();
         this.turned_around = true;
+        this.x_direction = 1;
         this.walking = true;
       }
-      this.x_direction = 1;
     }
     this.x_pos = this.x_pos + this.speed * this.x_direction;
+
+    if (this.turned_around === true && this.x_pos > this.GAMEWIDTH) {
+      this.markfordelete = true;
+      console.log("triggered");
+    }
   }
 }
