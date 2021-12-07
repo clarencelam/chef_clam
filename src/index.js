@@ -2,7 +2,11 @@ import Clam from "/src/clam";
 import InputHandler from "/src/input";
 import Food from "/src/food";
 import Customer from "/src/customer";
-import { detectCollision } from "/src/collisionDetection";
+import {
+  detectCollision,
+  foodShrink,
+  detectOverlapCollision
+} from "/src/gameMechanics";
 
 let canvas = document.getElementById("gameScreen");
 let ctx = canvas.getContext("2d");
@@ -51,21 +55,30 @@ function gameLoop(timestamp) {
   // update and draw bullets
   bullets = bullets.filter((bullet) => !bullet.marked_for_deletion);
 
-  // Code block to apply actions to each bullet active
+  // COLLISION DETECTION AND ACTIONS //
+
   bullets.forEach((bullet, index) => {
-    // if the bullet collides with any customer, run bullet.collide and cust.collide functions
-    // will pause objects
     customers.forEach((customer, index) => {
-      if (detectCollision(bullet, customer)) {
-        bullet.hitCustomer();
+      // checks if the food is done colliding (needs to get into range)
+      if (
+        detectOverlapCollision(bullet, customer) &&
+        bullet.food_hit === false // flag to prevent multiple triggers
+      ) {
+        // perform bullet & customer's post-hit actions
+        bullet.hitCustomer(customer);
         customer.hitFood();
-        console.log(bullet.marked_for_deletion);
+        console.log("hit_triggered");
+
+        // shrink the food as its being eaten
+        var intervalId = setInterval(foodShrink(bullet), 750);
+        if (bullet.size <= 0) {
+          clearInterval(intervalId);
+        }
       }
     });
     bullet.update(deltaTime);
     bullet.draw(ctx);
   });
-
   clam.update(deltaTime);
   clam.draw(ctx);
 
